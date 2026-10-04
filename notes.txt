@@ -1,0 +1,35 @@
+1. Create the /signup post route
+- receive email and pw
+- hash pw with bcrypt
+- stores data in users in supavase with password (encrypted)
+- if succesful JWT token is given
+
+2. Create the /login posr route
+- receive email and pw from the db
+-retrieves the hashed pw from db
+-uses bcrypt to compare between the input and pw in database
+-if valid return jwt token
+-if invalid return error message
+
+add a jwt secret in .env
+
+
+result.rows[0].user_id grabs the new user’s unique ID from the database after the INSERT.
+
+You need this user_id to:
+
+Include it in the JWT token payload (so you know who the token belongs to)
+Identify the user in future requests without exposing sensitive info
+Link data like posts or friendships back to this user
+So const user_id = result.rows[0].user_id; stores that ID so you can sign the token with it and keep track of the logged-in user.
+
+
+
+needed :
+Design REST endpoints around resources, the grammar of the web
+Wire Express to a real SQL database
+Validate request bodies before they ever touch your data
+Block SQL injection with parameterized queries
+Issue and verify expiring JSON Web Tokens
+Protect write routes with reusable auth middleware
+Return status codes and errors other developers will thank you for
