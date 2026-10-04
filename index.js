@@ -5,6 +5,10 @@ const app = express();
 const { Pool } = require("pg");
 require("dotenv").config();
 
+const cors = require("cors");
+app.use(cors());
+app.use(express.json());
+
 const bcrypt = require('bcryptjs'); //for hashing
 const jwt = require('jsonwebtoken'); //tokens for succesful signup/login
 
@@ -234,7 +238,6 @@ app.delete('/friend/:friend_id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to remove friend' });
   }
 });
-
 
 //for accepting a friend request, we need to check if the request exists and is pending, then update it to accepted
 app.patch('/friend/accept', authenticateToken, async (req, res) => {
@@ -496,8 +499,8 @@ app.patch('/profiles', authenticateToken, async (req, res) => {
 });
 
 
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000, () => {
-  console.log("App is listening on port 3000");
+app.listen(PORT, () => {
+  console.log(`App is listening on port ${PORT}`);
 });
-
