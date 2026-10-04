@@ -33,3 +33,36 @@ Block SQL injection with parameterized queries
 Issue and verify expiring JSON Web Tokens
 Protect write routes with reusable auth middleware
 Return status codes and errors other developers will thank you for
+
+
+COALESCE returns the first value that isn't NULL from the list you give it.
+
+sql
+COALESCE(NULL, NULL, 'hello')  -- 'hello'
+COALESCE('a', 'b')             -- 'a'
+COALESCE(NULL, 'b')            -- 'b'
+Why it's useful in your PATCH route
+
+In a PATCH request, the user only sends the fields they want to change. Say a post has:
+
+title	content
+"My trip"	"Penang was great"
+
+And in Postman you send only:
+
+json
+{ "content": "Penang was amazing" }
+
+In JavaScript, title is undefined, and the pg library sends that to the database as NULL.
+
+Without COALESCE:
+
+sql
+UPDATE posts SET title = $1, content = $2 WHERE post_id = $3
+
+becomes title = NULL, so your title gets wiped.
+
+With COALESCE:
+
+sql
+UPDATE posts SET title = COALESCE($1, title), content = COALESCE($2, content) WHERE post_id = $3
