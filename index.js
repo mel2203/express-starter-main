@@ -286,25 +286,32 @@ app.get('/posts', authenticateToken, async (req, res) => {
   try {
     let result;
     if (role === 'admin') {
-      // Admin: get all posts
-      result = await pool.query('SELECT * FROM posts ORDER BY created_at DESC');
-    } else {
-      // Regular user: apply visibility and friendship filter
-      result = await pool.query(
-       `SELECT * FROM posts p
- WHERE p.visibility = 'Public'
-    OR p.user_id = $1
-    OR (p.visibility = 'Friends-Only' AND EXISTS (
-         SELECT 1 FROM friendships f
-         WHERE f.status = 'accepted' AND (
-           (f.user_id_1 = $1 AND f.user_id_2 = p.user_id) OR
-           (f.user_id_2 = $1 AND f.user_id_1 = p.user_id)
-         )
-       ))
- ORDER BY p.created_at DESC`,
-        [userId]
-      );
-    }
+      // Admins can see all posts, so no filters are applied
+  result = await pool.query(
+    `SELECT p.*, pr.username
+     FROM posts p
+     LEFT JOIN profiles pr ON pr.user_id = p.user_id
+     ORDER BY p.created_at DESC`
+  );
+} else {
+  // For regular users, apply visibility and friendship filters
+  result = await pool.query(
+    `SELECT p.*, pr.username
+     FROM posts p
+     LEFT JOIN profiles pr ON pr.user_id = p.user_id
+     WHERE p.visibility = 'Public'
+        OR p.user_id = $1
+        OR (p.visibility = 'Friends-Only' AND EXISTS (
+             SELECT 1 FROM friendships f
+             WHERE f.status = 'accepted' AND (
+               (f.user_id_1 = $1 AND f.user_id_2 = p.user_id) OR
+               (f.user_id_2 = $1 AND f.user_id_1 = p.user_id)
+             )
+           ))
+     ORDER BY p.created_at DESC`,
+    [userId]
+  );
+}
     res.json(result.rows);
   } catch (error) {
     console.error(error);
