@@ -1,2 +1,72 @@
-Peanut Butter and Jelly API
-HELLO TESTING TESTING
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peanut Butter &amp; Jelly API</title>
+</head>
+<body>
+
+<h1>Peanut Butter &amp; Jelly API</h1>
+<p>Base URL: <code>https://peanutbutterandjelly-backend-production.up.railway.app/</code></p>
+
+<h2>Authentication</h2>
+<p>Routes marked "Yes" under Auth need a token from <code>/signup</code> or <code>/login</code>. Tokens last 1 hour. Send it like this:</p>
+<pre>Authorization: Bearer &lt;token&gt;</pre>
+
+<h2>Auth</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Body</th><th>Description</th></tr>
+<tr><td>GET</td><td>/db-check</td><td>No</td><td></td><td>Check the database connection</td></tr>
+<tr><td>POST</td><td>/signup</td><td>No</td><td>user_email, password</td><td>Create an account, returns a token</td></tr>
+<tr><td>POST</td><td>/login</td><td>No</td><td>user_email, password</td><td>Log in, returns user_id, role and a token</td></tr>
+</table>
+
+<h2>Profiles</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Body</th><th>Description</th></tr>
+<tr><td>GET</td><td>/profiles/:user_id</td><td>Yes</td><td></td><td>Get a profile</td></tr>
+<tr><td>POST</td><td>/profiles</td><td>Yes</td><td>username (required), age, bio, city</td><td>Create your profile</td></tr>
+<tr><td>PATCH</td><td>/profiles</td><td>Yes</td><td>any of username, age, bio, city</td><td>Update your profile</td></tr>
+</table>
+
+<h2>Friends</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Body</th><th>Description</th></tr>
+<tr><td>POST</td><td>/friend</td><td>Yes</td><td>friend_id</td><td>Send a friend request</td></tr>
+<tr><td>PATCH</td><td>/friend/accept</td><td>Yes</td><td>friend_id (the sender)</td><td>Accept a request someone sent you</td></tr>
+<tr><td>DELETE</td><td>/friend/:friend_id</td><td>Yes</td><td></td><td>Unfriend, reject, or cancel a request</td></tr>
+<tr><td>GET</td><td>/friends</td><td>Yes</td><td></td><td>List your accepted friends</td></tr>
+<tr><td>GET</td><td>/friend/requests</td><td>Yes</td><td></td><td>List requests sent to you</td></tr>
+</table>
+
+<h2>Posts</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Body</th><th>Description</th></tr>
+<tr><td>GET</td><td>/posts</td><td>Yes</td><td></td><td>Get posts you are allowed to see</td></tr>
+<tr><td>GET</td><td>/posts/:id</td><td>Yes</td><td></td><td>Get one post</td></tr>
+<tr><td>POST</td><td>/posts</td><td>Yes</td><td>visibility (required), title, content, image_url</td><td>Create a post</td></tr>
+<tr><td>PATCH</td><td>/posts/:id</td><td>Yes</td><td>any of title, content, visibility, image_url</td><td>Update your post (admins: any post)</td></tr>
+<tr><td>DELETE</td><td>/posts/:id</td><td>Yes</td><td></td><td>Delete your post (admins: any post)</td></tr>
+</table>
+
+<h2>Post visibility</h2>
+<ul>
+<li><code>Public</code>: everyone</li>
+<li><code>Friends-Only</code>: the author and their accepted friends</li>
+<li><code>Private</code>: only the author</li>
+</ul>
+
+<h2>Status codes</h2>
+<ul>
+<li>400: missing or invalid input, or a duplicate</li>
+<li>401: no token, or wrong email or password</li>
+<li>403: invalid token, or no permission</li>
+<li>404: not found</li>
+<li>500: server error</li>
+</ul>
+
+</body>
+</html>
