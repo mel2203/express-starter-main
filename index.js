@@ -140,6 +140,9 @@ const friend_id = parseInt(req.body.friend_id, 10);
 
 const [user_id_1, user_id_2] =
     user_id < friend_id ? [user_id, friend_id] : [friend_id, user_id];
+    //5 -> 2
+    //2 -> 5 
+    //compare and prevent duplicate entries by always storing the smaller user_id first
 
 
   try {
